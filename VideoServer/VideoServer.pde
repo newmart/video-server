@@ -2,7 +2,9 @@ int fileNum = 10;
 FileWrap[] fileWrap = new FileWrap[fileNum];
 
 void setup() {
-  size(640, 480, P2D);
+  size(640, 480);
+  //fullScreen(P2D);
+  background(0);
   
   loadData();
 }
@@ -25,10 +27,10 @@ void loadData() {
     if (count > fileNum) break;
     String filePath = files[i].getPath();
     if (isImage(filePath)) {
-      fileWrap[count] = new FileImage(filePath, FileType.IMAGE);
+      fileWrap[count] = new FileImage(this, filePath);
     }
     else if(isVideo(filePath)) {
-      fileWrap[count] = new FileVideo(filePath, FileType.VIDEO);
+      fileWrap[count] = new FileVideo(this, filePath); //<>//
     }
     else {
       println(files[i].getName() + " is not supported format.");
@@ -36,6 +38,7 @@ void loadData() {
      
     count++;
   }
+  
 }
 
 File[] listFiles(String dir) {

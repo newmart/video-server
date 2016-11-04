@@ -1,6 +1,6 @@
 class FileWrap {
   
-  protected String type;
+  protected PApplet parent;
   protected String path;
   
   protected boolean v;   // visible
@@ -13,11 +13,10 @@ class FileWrap {
   protected float a;     // alpha
   protected float seek;  // video seek position
 
-  FileWrap(String path, String type) {
+  FileWrap(PApplet parent, String path) {
+    this.parent = parent;
     this.path = path;
-    this.type = type;
-    
-    println("wrap -> path : " + path + ", type : " + type);
+    println("wrap -> path : " + path);
   }
   
   public void draw() {
@@ -44,6 +43,6 @@ class FileWrap {
   public void stop() {
   }
   
-  public void seek() {
+  public void jump(float t) {
   }
 }

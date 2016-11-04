@@ -2,15 +2,15 @@ class FileImage extends FileWrap {
   
   private PImage img;
   
-  FileImage(String path, String type) {
-    super(path, type);
+  FileImage(PApplet parent, String path) {
+    super(parent, path);
     
     img = loadImage(path);
     x = y = 0;
     w = img.width;
     h = img.height;
     
-    v = true;
+    v = false;
   }
   
   public void draw() {
