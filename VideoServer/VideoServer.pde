@@ -43,8 +43,7 @@ void loadData() {
     else {
       println(files[i].getName() + " is not supported format.");
     }
-  }
-  println("break"); //<>//
+  } //<>//
 }
 
 File[] listFiles(String dir) {
@@ -110,10 +109,18 @@ void oscEvent(OscMessage theOscMessage) {
             fileWrap[id].alpha(theOscMessage.get(0).floatValue());
         break;
       case "play":
+          fileWrap[id].play();
         break;
       case "stop":
+          fileWrap[id].stop();
         break;
       case "jump":
+          if(theOscMessage.checkTypetag("f")==true)
+            fileWrap[id].jump(theOscMessage.get(0).floatValue());
+        break;
+      case "volume":
+          if(theOscMessage.checkTypetag("f")==true)
+            fileWrap[id].volume(theOscMessage.get(0).floatValue());
         break;
     }
   }

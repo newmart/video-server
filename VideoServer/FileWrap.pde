@@ -50,4 +50,7 @@ class FileWrap {
   
   public void jump(float t) {
   }
+  
+  public void volume(float t) {
+  }
 }
