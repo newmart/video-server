@@ -6,10 +6,15 @@ class FileWrap {
   protected boolean v;   // visible
   protected float x;     // x
   protected float y;     // y
+  protected float z;     // z
   protected float w;     // width
   protected float h;     // height
+  protected float rx;    // rotate x
+  protected float ry;    // rotate y
+  protected float rz;    // rotate z
   protected float sx;    // scale x
   protected float sy;    // scale y
+  protected float sz;    // scale z
   protected float a;     // alpha
   protected float seek;  // video seek position
 
@@ -25,13 +30,13 @@ class FileWrap {
   public void visible(int b) {
   }
   
-  public void position(float x, float y, float z) {
+  public void position(float x, float y) {
   }
   
-  public void scale(float x, float y, float z) {
+  public void scale(float x, float y) {
   }
   
-  public void rotation(float x, float y, float z) {
+  public void rotation(float x) {
   }
   
   public void alpha(float a) {

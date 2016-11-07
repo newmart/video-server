@@ -7,13 +7,15 @@ void setup() {
   size(640, 480);
   //fullScreen(P2D);
   background(0);
+  imageMode(CENTER);
+  
   
   initOSC();
   loadData();
 }
 
 void draw() {
-  background(0);background(0);
+  background(0);
   for (int i=fileWrap.length-1; i>=0; i--) { // reverse 
     if(fileWrap[i] != null) fileWrap[i].draw();
   }
@@ -90,12 +92,22 @@ void oscEvent(OscMessage theOscMessage) {
           fileWrap[id].visible(theOscMessage.get(0).intValue());
         break;
       case "position":
-        break;
-      case "rotation":
+        if(theOscMessage.checkTypetag("ff")==true)
+            fileWrap[id].position(theOscMessage.get(0).floatValue(), 
+              theOscMessage.get(1).floatValue());
         break;
       case "scale":
+        if(theOscMessage.checkTypetag("ff")==true)
+            fileWrap[id].scale(theOscMessage.get(0).floatValue(), 
+              theOscMessage.get(1).floatValue());
+        break;
+      case "rotation":
+        if(theOscMessage.checkTypetag("f")==true)
+            fileWrap[id].rotation(theOscMessage.get(0).floatValue());
         break;
       case "alpha":
+        if(theOscMessage.checkTypetag("f")==true)
+            fileWrap[id].alpha(theOscMessage.get(0).floatValue());
         break;
       case "play":
         break;
