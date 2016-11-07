@@ -13,8 +13,7 @@ class FileVideo extends FileWrap {
     x = y = 0;
     w = video.width;
     h = video.height;
-    
-    v = true;
+    v = false;
   }
   
   public void draw() {

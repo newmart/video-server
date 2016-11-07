@@ -9,7 +9,6 @@ class FileImage extends FileWrap {
     x = y = 0;
     w = img.width;
     h = img.height;
-    
     v = false;
   }
   
@@ -19,7 +18,9 @@ class FileImage extends FileWrap {
     image(img, x, y, w, h);
   }
   
-  public void visible(boolean b) {
+  public void visible(int b) {
+    if(b == 0) v = false;
+    else v = true;
   }
   
   public void position(float x, float y, float z) {

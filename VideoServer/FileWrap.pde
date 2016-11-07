@@ -22,7 +22,7 @@ class FileWrap {
   public void draw() {
   }
   
-  public void visible(boolean b) {
+  public void visible(int b) {
   }
   
   public void position(float x, float y, float z) {
