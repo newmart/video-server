@@ -4,8 +4,8 @@ OscP5 oscP5;
 FileWrap[] fileWrap;
 
 void setup() {
-  size(640, 480);
-  //fullScreen(P2D);
+  //size(640, 480, P2D);
+  fullScreen(P2D);
   background(0);
   imageMode(CENTER);
   
@@ -37,7 +37,7 @@ void loadData() {
       count++;
     }
     else if(isVideo(filePath)) {
-      fileWrap[count] = new FileVideo(this, filePath);
+      fileWrap[count] = new FileGLVideo(this, filePath);
       count++;
     }
     else {
