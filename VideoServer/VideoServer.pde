@@ -1,14 +1,31 @@
 import oscP5.*;
+import controlP5.*;
 
 OscP5 oscP5;
 FileWrap[] fileWrap;
+PFont f;
+boolean debug = false;
+String log = "";
+
+ControlP5 cp5;
+Textarea debugTextarea;
 
 void setup() {
-  //size(640, 480, P2D);
-  fullScreen(P2D);
+  size(640, 480, P2D);
+  //fullScreen(P2D);
   background(0);
   imageMode(CENTER);
   
+  cp5 = new ControlP5(this);
+  debugTextarea = cp5.addTextarea("txt")
+                  .setPosition(10,10)
+                  .setSize(400,200)
+                  .setFont(createFont("arial",12))
+                  .setLineHeight(14)
+                  .setColor(color(128))
+                  .setColorBackground(color(255,100))
+                  .setColorForeground(color(255,100));
+  debugTextarea.hide();
   
   initOSC();
   loadData();
@@ -19,6 +36,21 @@ void draw() {
   for (int i=fileWrap.length-1; i>=0; i--) { // reverse 
     if(fileWrap[i] != null) fileWrap[i].draw();
   }
+}
+
+void keyPressed() {
+  if(key == ' ' ){
+    debug = !debug;
+  }
+  
+  if(debug) debugTextarea.show();
+  else debugTextarea.hide();
+}
+
+void showDebug() {
+  textFont(f,16);                  // STEP 3 Specify font to be used
+  fill(0);                         // STEP 4 Specify font color 
+  text("Hello Strings!",10,100);
 }
 
 void loadData() {
@@ -35,13 +67,16 @@ void loadData() {
     if (isImage(filePath)) {
       fileWrap[count] = new FileImage(this, filePath);
       count++;
+      debugTextarea.append("[Image] " + files[i].getName() + " added.\n");
     }
     else if(isVideo(filePath)) {
-      fileWrap[count] = new FileGLVideo(this, filePath);
+      fileWrap[count] = new FileVideo(this, filePath);
       count++;
+      debugTextarea.append("[Video] " + files[i].getName() + " added.\n");
     }
     else {
       println(files[i].getName() + " is not supported format.");
+      debugTextarea.append(files[i].getName() + " is not supported format.\n");
     }
   } //<>//
 }
@@ -71,7 +106,11 @@ return (
 }
 
 void initOSC() {
- oscP5 = new OscP5(this, 8000); 
+  oscP5 = new OscP5(this, 8000); 
+}
+
+void oscStatus(OscStatus theStatus) {
+  println("status : " + theStatus.id());
 }
 
 void oscEvent(OscMessage theOscMessage) {
@@ -80,6 +119,8 @@ void oscEvent(OscMessage theOscMessage) {
   print(" addrpattern: "+theOscMessage.addrPattern());
   print(" typetag: "+theOscMessage.typetag());
   println(" ("+millis()+")");
+  
+  if(debug) debugTextarea.append(" addrpattern: "+theOscMessage.addrPattern()+" ("+millis()+")\n");
   
   String[] pattern = theOscMessage.addrPattern().split("/");
   int id = int(pattern[1]);
