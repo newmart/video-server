@@ -3,25 +3,35 @@ import processing.video.*;
 class FileVideo extends FileWrap {
   Movie video;
   boolean isPlay;
+  boolean inited;
+  float volume;
 
   FileVideo(PApplet parent, String path) {
     super(parent, path);
     
     video = new Movie(parent, path);
     video.loop();
-    video.read();
-    video.volume(0);
-    video.pause();
-    x = y = 0;
+    x = y = volume = 0;
     sx = sy = a = 1;
-    w = video.width;
-    h = video.height;
-    v = isPlay = false;
+    v = isPlay = inited = false;
   }
   
   public void draw() {
-    if(v == false) return;
+    // video init
+    if( video.available() && inited == false ) {
+      video.read();
+      video.volume(volume);
+      video.pause();
+      
+      w = video.width;
+      h = video.height;
+      
+      inited = true;
+      
+      println("inited : w : "+w+", h : "+h);
+    }
     
+    if(v == false) return;
     if (video.available() && isPlay) {
       video.read();
     }
@@ -32,11 +42,18 @@ class FileVideo extends FileWrap {
     tint(255, 255*a); 
     image(video, 0, 0, w*sx, h*sy);
     popMatrix();
+    
+    //println("isPlay : "+isPlay+", x : "+x+", y : "+y+", sx : "+sx+", sy : "+sy+", a : "+a);
   }
   
   public void visible(int b) {
-    if(b == 0) v = false;
-    else v = true;
+    if(b == 0) {
+      v = false;
+      video.volume(0);
+    } else {
+      v = true;
+      video.volume(volume);
+    }
   }
   
   public void position(float x, float y) {
@@ -72,6 +89,7 @@ class FileVideo extends FileWrap {
   }
   
   public void volume(float t) {
-    video.volume(t);
+    volume = t;
+    video.volume(volume);
   }
 }

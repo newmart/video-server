@@ -5,14 +5,14 @@ OscP5 oscP5;
 FileWrap[] fileWrap;
 PFont f;
 boolean debug = false;
-String log = "";
+int logLine = 0;
 
 ControlP5 cp5;
 Textarea debugTextarea;
 
 void setup() {
-  size(640, 480, P2D);
-  //fullScreen(P2D);
+  //size(640, 480, P2D);
+  fullScreen(P2D);
   background(0);
   imageMode(CENTER);
   
@@ -41,16 +41,14 @@ void draw() {
 void keyPressed() {
   if(key == ' ' ){
     debug = !debug;
+  } else if ( key == '1' ){
+    fileWrap[4].play();
+  } else if ( key == '2' ) {
+    fileWrap[4].stop();
   }
   
   if(debug) debugTextarea.show();
   else debugTextarea.hide();
-}
-
-void showDebug() {
-  textFont(f,16);                  // STEP 3 Specify font to be used
-  fill(0);                         // STEP 4 Specify font color 
-  text("Hello Strings!",10,100);
 }
 
 void loadData() {
@@ -67,7 +65,7 @@ void loadData() {
     if (isImage(filePath)) {
       fileWrap[count] = new FileImage(this, filePath);
       count++;
-      debugTextarea.append("[Image] " + files[i].getName() + " added.\n");
+      log("[Image] " + files[i].getName() + " added.\n");
     }
     else if(isVideo(filePath)) {
       fileWrap[count] = new FileVideo(this, filePath);
@@ -76,7 +74,7 @@ void loadData() {
     }
     else {
       println(files[i].getName() + " is not supported format.");
-      debugTextarea.append(files[i].getName() + " is not supported format.\n");
+      log(files[i].getName() + " is not supported format.\n");
     }
   } //<>//
 }
@@ -101,6 +99,7 @@ return (
 
 boolean isVideo(String loadPath) {
 return (
+   loadPath.endsWith(".wmv") ||
    loadPath.endsWith(".mp4") ||
    loadPath.endsWith(".mov") ) ;
 }
@@ -120,7 +119,7 @@ void oscEvent(OscMessage theOscMessage) {
   print(" typetag: "+theOscMessage.typetag());
   println(" ("+millis()+")");
   
-  if(debug) debugTextarea.append(" addrpattern: "+theOscMessage.addrPattern()+" ("+millis()+")\n");
+  if(debug) log(" addrpattern: "+theOscMessage.addrPattern()+" ("+millis()+")\n");
   
   String[] pattern = theOscMessage.addrPattern().split("/");
   int id = int(pattern[1]);
@@ -165,4 +164,15 @@ void oscEvent(OscMessage theOscMessage) {
         break;
     }
   }
+}
+
+void log(String msg) {
+  debugTextarea.append(msg, logLine);
+  debugTextarea.scroll(logLine);
+  logLine++;
+  if(logLine>100) {
+    debugTextarea.clear();
+    logLine = 0;
+  }
+  
 }
