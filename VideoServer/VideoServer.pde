@@ -23,8 +23,8 @@ void setup() {
                   .setFont(createFont("arial",12))
                   .setLineHeight(14)
                   .setColor(color(128))
-                  .setColorBackground(color(255,100))
-                  .setColorForeground(color(255,100));
+                  .setColorBackground(color(0,220))
+                  .setColorForeground(color(255,200));
   debugTextarea.hide();
   
   initOSC();
@@ -45,6 +45,8 @@ void keyPressed() {
     fileWrap[4].play();
   } else if ( key == '2' ) {
     fileWrap[4].stop();
+  } else if ( key == 'c' ) {
+    debugTextarea.clear();
   }
   
   if(debug) debugTextarea.show();
@@ -70,13 +72,16 @@ void loadData() {
     else if(isVideo(filePath)) {
       fileWrap[count] = new FileVideo(this, filePath);
       count++;
-      debugTextarea.append("[Video] " + files[i].getName() + " added.\n");
+      log("[Video] " + files[i].getName() + " added.\n");
     }
     else {
       println(files[i].getName() + " is not supported format.");
       log(files[i].getName() + " is not supported format.\n");
     }
   } //<>//
+  
+  log(count + "files added.");
+  
 }
 
 File[] listFiles(String dir) {
@@ -119,7 +124,7 @@ void oscEvent(OscMessage theOscMessage) {
   print(" typetag: "+theOscMessage.typetag());
   println(" ("+millis()+")");
   
-  if(debug) log(" addrpattern: "+theOscMessage.addrPattern()+" ("+millis()+")\n");
+  String l = theOscMessage.addrPattern() + " ";
   
   String[] pattern = theOscMessage.addrPattern().split("/");
   int id = int(pattern[1]);
@@ -129,24 +134,29 @@ void oscEvent(OscMessage theOscMessage) {
       case "visible":
         if(theOscMessage.checkTypetag("i")==true)
           fileWrap[id].visible(theOscMessage.get(0).intValue());
+          if(debug) l += theOscMessage.get(0).intValue(); 
         break;
       case "position":
         if(theOscMessage.checkTypetag("ff")==true)
             fileWrap[id].position(theOscMessage.get(0).floatValue(), 
               theOscMessage.get(1).floatValue());
+            if(debug) l += theOscMessage.get(0).floatValue() + ", " + theOscMessage.get(1).floatValue();
         break;
       case "scale":
         if(theOscMessage.checkTypetag("ff")==true)
             fileWrap[id].scale(theOscMessage.get(0).floatValue(), 
               theOscMessage.get(1).floatValue());
+            if(debug) l += theOscMessage.get(0).floatValue() + ", " + theOscMessage.get(1).floatValue();
         break;
       case "rotation":
         if(theOscMessage.checkTypetag("f")==true)
             fileWrap[id].rotation(theOscMessage.get(0).floatValue());
+            if(debug) l += theOscMessage.get(0).floatValue();
         break;
       case "alpha":
         if(theOscMessage.checkTypetag("f")==true)
             fileWrap[id].alpha(theOscMessage.get(0).floatValue());
+            if(debug) l += theOscMessage.get(0).floatValue();
         break;
       case "play":
           fileWrap[id].play();
@@ -157,12 +167,16 @@ void oscEvent(OscMessage theOscMessage) {
       case "jump":
           if(theOscMessage.checkTypetag("f")==true)
             fileWrap[id].jump(theOscMessage.get(0).floatValue());
+            if(debug) l += theOscMessage.get(0).floatValue();
         break;
       case "volume":
           if(theOscMessage.checkTypetag("f")==true)
             fileWrap[id].volume(theOscMessage.get(0).floatValue());
+            if(debug) l += theOscMessage.get(0).floatValue();
         break;
     }
+    
+    if(debug) log(l+" ("+millis()+")\n");
   }
 }
 
@@ -173,6 +187,5 @@ void log(String msg) {
   if(logLine>100) {
     debugTextarea.clear();
     logLine = 0;
-  }
-  
+  } 
 }

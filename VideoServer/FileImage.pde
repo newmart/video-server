@@ -6,7 +6,8 @@ class FileImage extends FileWrap {
     super(parent, path);
     
     img = loadImage(path);
-    x = y = 0;
+    position(0.5, 0.5);
+    scale(1, 1);
     sx = sy = a = 1;
     w = img.width;
     h = img.height;

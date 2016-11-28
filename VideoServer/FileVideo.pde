@@ -11,8 +11,10 @@ class FileVideo extends FileWrap {
     
     video = new Movie(parent, path);
     video.loop();
-    x = y = volume = 0;
-    sx = sy = a = 1;
+    position(0.5, 0.5);
+    scale(1, 1); 
+    volume = 0;
+    a = 1;
     v = isPlay = inited = false;
   }
   
@@ -32,7 +34,7 @@ class FileVideo extends FileWrap {
     }
     
     if(v == false) return;
-    if (video.available() && isPlay) {
+    if (video.available()) {
       video.read();
     }
     
@@ -85,7 +87,8 @@ class FileVideo extends FileWrap {
   }
   
   public void jump(float t) {
-    video.jump(t);
+    video.jump(t*video.duration());
+    video.read();
   }
   
   public void volume(float t) {
