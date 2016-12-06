@@ -1,5 +1,8 @@
 import oscP5.*;
 import controlP5.*;
+import codeanticode.syphon.*;
+
+//SyphonServer server;
 
 OscP5 oscP5;
 FileWrap[] fileWrap;
@@ -10,9 +13,13 @@ int logLine = 0;
 ControlP5 cp5;
 Textarea debugTextarea;
 
-void setup() {
-  //size(640, 480, P2D);
-  fullScreen(P2D);
+void settings() {
+  //size(800,600, P3D);
+  fullScreen(P3D);
+  PJOGL.profile=1;
+}
+
+void setup() {  
   background(0);
   imageMode(CENTER);
   
@@ -29,6 +36,7 @@ void setup() {
   
   initOSC();
   loadData();
+  //server = new SyphonServer(this, "Video Server");
 }
 
 void draw() {
@@ -36,15 +44,18 @@ void draw() {
   for (int i=fileWrap.length-1; i>=0; i--) { // reverse 
     if(fileWrap[i] != null) fileWrap[i].draw();
   }
+  //server.sendScreen();
 }
 
 void keyPressed() {
   if(key == ' ' ){
     debug = !debug;
   } else if ( key == '1' ){
-    fileWrap[4].play();
+    fileWrap[3].visible(1);
+    fileWrap[3].play();
   } else if ( key == '2' ) {
-    fileWrap[4].stop();
+    fileWrap[3].visible(0);
+    fileWrap[3].stop();
   } else if ( key == 'c' ) {
     debugTextarea.clear();
   }
@@ -69,19 +80,23 @@ void loadData() {
       count++;
       log("[Image] " + files[i].getName() + " added.\n");
     }
+    else if(isMask(filePath)) {
+      fileWrap[count] = new FileMask(this, filePath);
+      count++;
+      log("[Mask] " + files[i].getName() + " added.\n");
+    }
     else if(isVideo(filePath)) {
       fileWrap[count] = new FileVideo(this, filePath);
       count++;
-      log("[Video] " + files[i].getName() + " added.\n");
+      log("[Video] " + files[i].getName() + " added.\n"); //<>//
     }
     else {
       println(files[i].getName() + " is not supported format.");
       log(files[i].getName() + " is not supported format.\n");
     }
-  } //<>//
+  }
   
   log(count + "files added.");
-  
 }
 
 File[] listFiles(String dir) {
@@ -107,6 +122,15 @@ return (
    loadPath.endsWith(".wmv") ||
    loadPath.endsWith(".mp4") ||
    loadPath.endsWith(".mov") ) ;
+}
+
+boolean isMask(String loadPath) {
+  String[] s = loadPath.split("mask");
+  print("mask length : " + s.length);
+  return (
+   (s.length > 1 && loadPath.endsWith(".wmv")) ||
+   (s.length > 1 && loadPath.endsWith(".mp4")) ||
+   (s.length > 1 && loadPath.endsWith(".mov")) ) ;
 }
 
 void initOSC() {
