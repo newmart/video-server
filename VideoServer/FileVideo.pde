@@ -87,8 +87,10 @@ class FileVideo extends FileWrap {
   }
   
   public void jump(float t) {
+    video.play();
     video.jump(t*video.duration());
-    video.read();
+    video.volume(volume);
+    video.pause();
   }
   
   public void volume(float t) {
